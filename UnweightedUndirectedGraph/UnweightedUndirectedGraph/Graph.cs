@@ -57,15 +57,13 @@ namespace UnweightedUndirectedGraph
             b.Neighbors.Remove(a);
         }
 
-        public bool IsConnectd(Vertex<T> a, Vertex<T> b)
+        public bool IsConnectd(Vertex<T> start, Vertex<T> end)
         {
 
             //have a path stack
             //have a hashmap visited
 
-            Stack<Vertex<T>> path = new Stack<Vertex<T>>();
-            HashSet<Vertex<T>> visited = new HashSet<Vertex<T>>();
-
+            
 
             //List<Vertex<T>> visited = new List<Vertex<T>>();
             //Stack<Vertex<T>> stack = new Stack<Vertex<T>>();
@@ -120,31 +118,32 @@ namespace UnweightedUndirectedGraph
             //return false;
         }
 
-        public Stack<Vertex<T>> DepthFirstSearch(Vertex<T> a, Vertex<T> b)
+        public Stack<Vertex<T>> DepthFirstSearch(Vertex<T> start, Vertex<T> end)
         {
-            List<Vertex<T>> visited = new List<Vertex<T>>();
-            Stack<Vertex<T>> stack = new Stack<Vertex<T>>();
+            Stack<Vertex<T>> path = new Stack<Vertex<T>>();
+            HashSet<Vertex<T>> visited = new HashSet<Vertex<T>>();
 
-            stack.Push(a);
+            Vertex<T> current = start;
+            path.Push(current);
 
-            while (stack.Count != 0)
+            while (current != end)
             {
-                Vertex<T> temp = stack.Pop();
-
-                visited.Add(temp);
-                if (temp == b)
+                for (int i = 0; i < current.Neighbors.Count; i++)
                 {
-                    return stack;
-                }
-                foreach (Vertex<T> vertex in temp.Neighbors)
-                {
-                    if (!visited.Contains(vertex))
+                    if (!visited.Contains(current.Neighbors[i]))
                     {
-                        stack.Push(vertex);
+                        current = current.Neighbors[i];
+                        path.Push(current);
+                        visited.Add(current);
+                        if (current.Neighbors.Count == 0)
+                        {
+                            path.Pop();
+                            current = path.Peek();
+                        }
                     }
+                    
                 }
             }
-            return stack;
         }
     }
 }
