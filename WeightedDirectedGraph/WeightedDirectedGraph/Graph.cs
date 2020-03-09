@@ -6,8 +6,8 @@ namespace WeightedDirectedGraph
 {
     class Graph<T>
     {
-        List<Vertex<T>> vertices;
-        List<Edge<T>> edges;
+        List<Vertex<T>> vertices = new List<Vertex<T>>();
+        List<Edge<T>> edges = new List<Edge<T>>();
 
         public void AddVertex(Vertex<T> vertex)
         {
@@ -18,6 +18,7 @@ namespace WeightedDirectedGraph
         {
             edges.Add(new Edge<T>(start, end, distance));
             start.Neighbors.Add(end);
+            end.Neighbors.Add(start);
         }
 
         public void RemoveVertex(Vertex<T> vertex)

@@ -16,5 +16,9 @@ namespace WeightedDirectedGraph
             End = end;
             Distance = distance;
         }
+        public override string ToString()
+        {
+            return Start.Value.ToString() + ", " + End.Value.ToString() + ", " + Distance;
+        }
     }
 }
