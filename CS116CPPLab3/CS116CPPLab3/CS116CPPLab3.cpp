@@ -19,9 +19,9 @@ int main()
 	cout << "How many hours did you use" << endl;
 	cin >> numOfHours;
 
-	if (numOfHours > 200)
+	if (numOfHours > 200 || numOfHours < 0)
 	{
-		cout << "Number of hours used cannot exceed 200" << endl;
+		cout << "Number of hours used cannot exceed 200 and cannot be less than 0" << endl;
 		return(0);
 	}
 
@@ -36,8 +36,6 @@ int main()
 			extraHoursUsed = numOfHours - hoursAllowed;
 		}
 		billTotal += extraHoursUsed * extraHours;
-		cout << "Package " << package << ", usage: " << numOfHours << " Hours,       Bill: $" << billTotal << endl;
-
 		cout << "If you use 30 hours, you would save $25 by switching to Package B, and save $30  by swtiching to Package C" << endl;
 	}
 
@@ -52,15 +50,17 @@ int main()
 			extraHoursUsed = numOfHours - hoursAllowed;
 		}
 		billTotal += extraHoursUsed * extraHours;
-		cout << "Package " << package << ", usage: " << numOfHours << " Hours,       Bill: $" << billTotal << endl;
+
 	}
 	else
 	{
 		perMonth = 19.95;
 		billTotal = 19.95;
-		cout << "Your total is $" << billTotal << endl;
-		cout << "You chose Package " << package << endl;
-		cout << "You used " << numOfHours << " hours, the base charge was 19.95"
+
 	}
+
+	cout << "Your total is $" << billTotal << endl;
+	cout << "You chose Package " << package << endl;
+	cout << "You used " << numOfHours << " hours, the base charge was " << perMonth << endl;
 }
 

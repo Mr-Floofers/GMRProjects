@@ -17,8 +17,11 @@ namespace WeightedDirectedGraph
         public void AddEdge(Vertex<T> start, Vertex<T> end, float distance)
         {
             edges.Add(new Edge<T>(start, end, distance));
-            start.Neighbors.Add(end);
-            end.Neighbors.Add(start);
+            if (!start.Neighbors.Contains(end))
+            {
+                start.Neighbors.Add(end);
+                end.Neighbors.Add(start);
+            }
         }
 
         public void RemoveVertex(Vertex<T> vertex)
@@ -27,21 +30,24 @@ namespace WeightedDirectedGraph
             {
                 vertex.Neighbors[i].Neighbors.Remove(vertex);
                 vertex.Neighbors.Remove(vertex.Neighbors[i]);
+                i--;
             }
-            foreach (Edge<T> edge in edges)
+            for (int i = 0; i < edges.Count; i++)
             {
-                if (edge.Start == vertex || edge.End == vertex)
+                if (edges[i].Start == vertex || edges[i].End == vertex)
                 {
-                    edges.Remove(edge);
+                    edges.Remove(edges[i]);
+                    i--;
                 }
             }
+            vertices.Remove(vertex);
         }
 
         public void RemoveEdge(Vertex<T> start, Vertex<T> end)
         {
-            foreach (Edge<T> edge in edges)
+            for (int k = 0; k < edges.Count; k++)
             {
-                if (edge.Start == start && edge.End == end)
+                if (edges[k].Start == start && edges[k].End == end)
                 {
                     bool removeNeighbors = true;
                     for (int i = 0; i < edges.Count; i++)
@@ -53,10 +59,10 @@ namespace WeightedDirectedGraph
                     }
                     if (removeNeighbors)
                     {
-                        edge.Start.Neighbors.Remove(edge.End);
-                        edge.End.Neighbors.Remove(edge.Start);
+                        edges[k].Start.Neighbors.Remove(edges[k].End);
+                        edges[k].End.Neighbors.Remove(edges[k].Start);
                     }
-                    edges.Remove(edge);
+                    edges.Remove(edges[k]);
                 }
             }
         }

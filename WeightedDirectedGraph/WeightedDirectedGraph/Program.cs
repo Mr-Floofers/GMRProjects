@@ -29,6 +29,9 @@ namespace WeightedDirectedGraph
             graph.AddEdge(thing9, thing7, 4);
             graph.AddEdge(thing7, thing9, 6);
 
+            graph.RemoveEdge(thing5, thing7);
+            graph.RemoveVertex(thing7);
+
             return;
         }
     }
