@@ -66,5 +66,48 @@ namespace WeightedDirectedGraph
                 }
             }
         }
+
+        public Vertex<T> Search(T val)
+        {
+            for (int i = 0; i < vertices.Count; i++)
+            {
+                if (vertices[i].Value.Equals(val))
+                {
+                    return vertices[i];
+                }
+            }
+            return null;
+        }
+
+        public Edge<T> GetEdge(Vertex<T> start, Vertex<T> end)
+        {
+            foreach(Edge<T> edge in edges)
+            {
+                if(edge.Start == start && edge.End == end)
+                {
+                    return edge;
+                }
+            }
+            return null;
+        }
+
+        public Stack<Vertex<T>> DeapthFirstSearch(Vertex<T> start, Vertex<T> end)
+        {
+            Stack<Vertex<T>> path = new Stack<Vertex<T>>();
+            HashSet<Vertex<T>> visited = new HashSet<Vertex<T>>();
+            List<Vertex<T>> sideVertices = new List<Vertex<T>>();
+
+            Vertex<T> current = start;
+            while(current != end)
+            {
+                for(int i = 0; i < current.Neighbors.Count; i++)
+                {
+                    sideVertices.Add(current.Neighbors[i]);
+                }
+
+                bool nonVistied = false;
+
+            }
+        }
     }
 }

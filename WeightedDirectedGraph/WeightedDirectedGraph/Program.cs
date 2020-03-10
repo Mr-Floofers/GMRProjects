@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace WeightedDirectedGraph
 {
@@ -29,8 +30,7 @@ namespace WeightedDirectedGraph
             graph.AddEdge(thing9, thing7, 4);
             graph.AddEdge(thing7, thing9, 6);
 
-            graph.RemoveEdge(thing5, thing7);
-            graph.RemoveVertex(thing7);
+            Queue<Vertex<int>> path = graph.BreadthFirstSearch(thing0, thing7);
 
             return;
         }
