@@ -81,9 +81,9 @@ namespace WeightedDirectedGraph
 
         public Edge<T> GetEdge(Vertex<T> start, Vertex<T> end)
         {
-            foreach(Edge<T> edge in edges)
+            foreach (Edge<T> edge in edges)
             {
-                if(edge.Start == start && edge.End == end)
+                if (edge.Start == start && edge.End == end)
                 {
                     return edge;
                 }
@@ -91,23 +91,194 @@ namespace WeightedDirectedGraph
             return null;
         }
 
-        public Stack<Vertex<T>> DeapthFirstSearch(Vertex<T> start, Vertex<T> end)
+        public IEnumerable<T> DFS(Vertex<T> start, Vertex<T> end)
         {
-            Stack<Vertex<T>> path = new Stack<Vertex<T>>();
-            HashSet<Vertex<T>> visited = new HashSet<Vertex<T>>();
-            List<Vertex<T>> sideVertices = new List<Vertex<T>>();
+            // recursive
 
-            Vertex<T> current = start;
-            while(current != end)
+            List<T> path = new List<T>();
+            var visited = new Dictionary<Vertex<T>, bool>();
+            vertices.ForEach(x => visited.Add(x, false));
+
+            DFS(path, visited, start, end);
+
+
+            return path;
+        }
+
+        private void DFS(List<T> path, Dictionary<Vertex<T>, bool> visited, Vertex<T> node, Vertex<T> end)
+        {
+            if (node == null)
             {
-                for(int i = 0; i < current.Neighbors.Count; i++)
+                return;
+            }
+
+            visited[node] = true;
+            path.Add(node.Value);
+
+            if (node == end)
+            {
+                return;
+            }
+
+
+            foreach (var neighbor in node.Neighbors)
+            {
+                if (!visited[neighbor] && edges.Contains(GetEdge(node, neighbor)))//the second part is for checking direction, only important in directed graphs
                 {
-                    sideVertices.Add(current.Neighbors[i]);
+                    DFS(path, visited, neighbor, end);
+                    //stack.Push(neighbor);
+                }
+            }
+
+        }
+
+        public IEnumerable<T> DeapthFirstSearch(Vertex<T> start, Vertex<T> end)
+        {
+            var stack = new Stack<Vertex<T>>();
+            var path = new List<T>();   // add nodes here when i "visit" them
+
+            var visited = new Dictionary<Vertex<T>, bool>();
+
+            vertices.ForEach(x => visited.Add(x, false));
+
+            stack.Push(start);
+
+            while (stack.Count > 0)
+            {
+                var temp = stack.Pop();
+
+                // visit the node
+
+                visited[temp] = true;
+                path.Add(temp.Value);
+
+                if (temp == end)
+                {
+                    break;
                 }
 
-                bool nonVistied = false;
-
+                foreach (var neighbor in temp.Neighbors)
+                {
+                    if (!visited[neighbor] && edges.Contains(GetEdge(temp, neighbor)))//the second part is for checking direction, only important in directed graphs
+                    {
+                        stack.Push(neighbor);
+                    }
+                }
             }
+
+            return path;
+
+            //Stack<Vertex<T>> path = new Stack<Vertex<T>>();
+            //HashSet<Vertex<T>> visited = new HashSet<Vertex<T>>();
+
+            //Vertex<T> current = start;
+
+            //while (current != end)
+            //{
+            //    bool nonVistied = false;
+            //    foreach (Vertex<T> vertex in current.Neighbors)
+            //    {
+            //        if (!current.Neighbors.Contains(vertex))
+            //        {
+            //            path.Push(current);
+            //            visited.Add(vertex);
+            //            current = vertex;
+            //            nonVistied = true;
+            //            break;
+            //        }
+            //    }
+
+            //    if (nonVistied)
+            //    {
+            //        if(path.Count == 0)
+            //        {
+            //            return path;
+            //        }
+            //        current = path.Pop();
+            //    }
+            //}
+            //path.Push(end);
+            //return path;
+
+        }
+
+
+        public IEnumerable<T> BreathFirstSearch(Vertex<T> start, Vertex<T> end)
+        {
+            var stack = new Queue<Vertex<T>>();
+            var path = new List<T>();   // add nodes here when i "visit" them
+
+            var visited = new Dictionary<Vertex<T>, bool>();
+
+            vertices.ForEach(x => visited.Add(x, false));
+
+            stack.Enqueue(start);
+
+            while (stack.Count > 0)
+            {
+                var temp = stack.Dequeue();
+
+                // visit the node
+
+                visited[temp] = true;
+                path.Add(temp.Value);
+
+                if (temp == end)
+                {
+                    break;
+                }
+
+                foreach (var neighbor in temp.Neighbors)
+                {
+                    if (!visited[neighbor] && edges.Contains(GetEdge(temp, neighbor)))//the second part is for checking direction, only important in directed graphs
+                    {
+                        stack.Enqueue(neighbor);
+                    }
+                }
+            }
+
+            return path;
+        }
+
+        //pathfinding
+
+        public void Dijkstras(Vertex<T> start, Vertex<T> end)
+        {
+            //things that ust be known to each vertex
+            //  distance from start
+            //  parent of vertex
+            //  if the vertex has been visited
+
+            var distance = new Dictionary<Vertex<T>, int>();
+            vertices.ForEach(x => distance.Add(x, int.MaxValue));
+
+            var parent = new Dictionary<Vertex<T>, Vertex<T>>();//first one is the child, second is parent
+            vertices.ForEach(x => parent.Add(x, null));
+
+            var visited = new Dictionary<Vertex<T>, bool>();
+            vertices.ForEach(x => visited.Add(x, false));
+
+            /* Steps:
+             * Initialize all the vertices by marking them un-visited, setting their known distance to ∞, and setting their founder to null.
+             * 
+             * Assign the start vertex's known distance to 0 (since it is a distance of 0 from the start vertex!) and add it to a PriorityQueue. 
+             * The priority of the vertices is their cumulative distance.
+             * 
+             * Pop from the priority queue to obtain the current vertex which has the smallest cumulative distance.
+             * 
+             * For the current vertex, consider all of its neighbors and calculate their tentative distances. That is, the current 
+             * vertex's cumulative distance plus the weight to travel to that neighbor.
+             * Compare the newly calculated tentative distance to the neighbors current cumulative distance.
+             * If the tentative distance is smaller, set the neighbors cumulative distance as the tentative distance and update 
+             * the founder of the neighbor to be the current vertex. 
+             * (also setting it to be un-visited will help if we revisit a vertex with a better path).
+             * 
+             * Add all un-visited & un-queued neighbors to the priority queue.
+             * 
+             * When we are done considering all the neighbors of the current vertex, mark the current vertex as visited. 
+             * A visited vertex will never be checked again. If the end vertex has been marked visited, stop searching. 
+             * The algorithm has finished. Otherwise, repeat from step 3 as long as vertices exist within the priority queue.
+             */
         }
     }
 }

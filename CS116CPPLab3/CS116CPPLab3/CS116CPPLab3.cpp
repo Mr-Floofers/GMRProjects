@@ -10,6 +10,7 @@ int main()
 
 	cout << "What package did you buy, enter A, B, C" << endl;
 	cin >> package;
+	package = toupper(package); // make everything uppercase to make sure that all the inputs are the same
 	while (package != 'A' && package != 'B' && package != 'C')
 	{
 		cout << "Please enter a valid package" << endl;
@@ -36,7 +37,10 @@ int main()
 			extraHoursUsed = numOfHours - hoursAllowed;
 		}
 		billTotal += extraHoursUsed * extraHours;
-		cout << "If you use 30 hours, you would save $25 by switching to Package B, and save $30  by swtiching to Package C" << endl;
+		if (numOfHours == 30)
+		{
+			cout << "If you use 30 hours, you would save $25 by switching to Package B, and save $30  by swtiching to Package C" << endl;
+		}
 	}
 
 	else if (package == 'B')
@@ -64,3 +68,20 @@ int main()
 	cout << "You used " << numOfHours << " hours, the base charge was " << perMonth << endl;
 }
 
+/*
+What package did you buy, enter A, B, C
+a
+How many hours did you use       
+12
+Your total is $13.95
+You chose Package A
+You used 12 hours, the base charge was 9.95
+
+What package did you buy, enter A, B, C
+a
+How many hours did you use
+30
+If you use 30 hours, you would save $25 by switching to Package B, and save $30  by swtiching to Package C
+Your total is $49.95
+You chose Package A
+You used 30 hours, the base charge was 9.95*/
