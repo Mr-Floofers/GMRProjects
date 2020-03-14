@@ -4,7 +4,7 @@ using System.Text;
 
 namespace HeapTree
 {
-    class Tree<T> where T : IComparable<T>
+    public class Tree<T> where T : IComparable<T>
     {
         T[] data;
         int Count;

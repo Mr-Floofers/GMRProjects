@@ -4,7 +4,7 @@ using System.Text;
 
 namespace HeapTree
 {
-    class PriorityQueue<T> where T : IComparable<T>
+    public class PriorityQueue<T> where T : IComparable<T>
     {
         public struct item
         {

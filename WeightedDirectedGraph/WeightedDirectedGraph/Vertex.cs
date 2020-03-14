@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace WeightedDirectedGraph
@@ -12,6 +13,11 @@ namespace WeightedDirectedGraph
         {
             Value = value;
             Neighbors = new List<Vertex<T>>();
+        }
+
+        public int CompareTo([AllowNull] T other)
+        {
+            throw new NotImplementedException();
         }
 
         public override string ToString()

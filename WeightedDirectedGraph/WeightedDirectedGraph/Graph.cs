@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Priority_Queue;
+using System.Linq;
 
 namespace WeightedDirectedGraph
 {
-    class Graph<T>
+
+    class Graph<T> where T : IComparable<T>
     {
         List<Vertex<T>> vertices = new List<Vertex<T>>();
         List<Edge<T>> edges = new List<Edge<T>>();
@@ -249,14 +252,41 @@ namespace WeightedDirectedGraph
             //  parent of vertex
             //  if the vertex has been visited
 
-            var distance = new Dictionary<Vertex<T>, int>();
-            vertices.ForEach(x => distance.Add(x, int.MaxValue));
+            var distance = new Dictionary<Vertex<T>, float>();
+            vertices.ForEach(x => distance.Add(x, float.MaxValue));
 
             var parent = new Dictionary<Vertex<T>, Vertex<T>>();//first one is the child, second is parent
             vertices.ForEach(x => parent.Add(x, null));
 
             var visited = new Dictionary<Vertex<T>, bool>();
             vertices.ForEach(x => visited.Add(x, false));
+            SimplePriorityQueue<Vertex<T>> queue = new SimplePriorityQueue<Vertex<T>>();
+
+
+            distance[start] = 0;
+            queue.Enqueue(start, distance[start]);
+            
+
+            Vertex<T> current = queue.First;
+            while (current != end)
+            {
+                current = queue.Dequeue();
+
+                foreach (var vertex in vertices.Where(x => edges.Contains(GetEdge(current, x))))
+                {
+                    if (distance[vertex] > distance[current] + GetEdge(current, vertex).Distance)
+                    {
+                        parent[vertex] = current;
+                        distance[vertex] = distance[current] + GetEdge(current, vertex).Distance;
+                        queue.Enqueue(vertex);
+                    }
+                    else
+                    {
+
+                    }
+                    
+                }
+            }
 
             /* Steps:
              * Initialize all the vertices by marking them un-visited, setting their known distance to ∞, and setting their founder to null.

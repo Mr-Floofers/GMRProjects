@@ -8,7 +8,7 @@ namespace WeightedDirectedGraph
     {
         public Vertex<T> Start;
         public Vertex<T> End;
-        float Distance;
+        public float Distance;
 
         public Edge(Vertex<T> start, Vertex<T> end, float distance = 0)
         {
