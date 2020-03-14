@@ -245,48 +245,44 @@ namespace WeightedDirectedGraph
 
         //pathfinding
 
-        public void Dijkstras(Vertex<T> start, Vertex<T> end)
+        public IEnumerable<Vertex<T>> Dijkstras(Vertex<T> start, Vertex<T> end)
         {
             //things that ust be known to each vertex
             //  distance from start
             //  parent of vertex
             //  if the vertex has been visited
 
-            var distance = new Dictionary<Vertex<T>, float>();
-            vertices.ForEach(x => distance.Add(x, float.MaxValue));
+            //var distance = new Dictionary<Vertex<T>, float>();
+            //vertices.ForEach(x => distance.Add(x, float.MaxValue));
 
-            var parent = new Dictionary<Vertex<T>, Vertex<T>>();//first one is the child, second is parent
-            vertices.ForEach(x => parent.Add(x, null));
+            //var parent = new Dictionary<Vertex<T>, Vertex<T>>();//first one is the child, second is parent
+            //vertices.ForEach(x => parent.Add(x, null));
 
-            var visited = new Dictionary<Vertex<T>, bool>();
-            vertices.ForEach(x => visited.Add(x, false));
-            SimplePriorityQueue<Vertex<T>> queue = new SimplePriorityQueue<Vertex<T>>();
+            //var visited = new Dictionary<Vertex<T>, bool>();
+            //vertices.ForEach(x => visited.Add(x, false));
+            //SimplePriorityQueue<Vertex<T>> queue = new SimplePriorityQueue<Vertex<T>>();
 
 
-            distance[start] = 0;
-            queue.Enqueue(start, distance[start]);
-            
+            //distance[start] = 0;
+            //queue.Enqueue(start, distance[start]);
 
-            Vertex<T> current = queue.First;
-            while (current != end)
-            {
-                current = queue.Dequeue();
 
-                foreach (var vertex in vertices.Where(x => edges.Contains(GetEdge(current, x))))
-                {
-                    if (distance[vertex] > distance[current] + GetEdge(current, vertex).Distance)
-                    {
-                        parent[vertex] = current;
-                        distance[vertex] = distance[current] + GetEdge(current, vertex).Distance;
-                        queue.Enqueue(vertex);
-                    }
-                    else
-                    {
+            //Vertex<T> current = queue.First;
+            //while (current != end)
+            //{
+            //    current = queue.Dequeue();
 
-                    }
-                    
-                }
-            }
+            //    foreach (var vertex in vertices.Where(x => edges.Contains(GetEdge(current, x))))
+            //    {
+            //        if (distance[vertex] > distance[current] + GetEdge(current, vertex).Distance)
+            //        {
+            //            parent[vertex] = current;
+            //            distance[vertex] = distance[current] + GetEdge(current, vertex).Distance;
+            //            queue.Enqueue(vertex, distance[current] + GetEdge(current, vertex).Distance);
+            //        }
+
+            //    }
+            //}
 
             /* Steps:
              * Initialize all the vertices by marking them un-visited, setting their known distance to ∞, and setting their founder to null.
@@ -309,6 +305,33 @@ namespace WeightedDirectedGraph
              * A visited vertex will never be checked again. If the end vertex has been marked visited, stop searching. 
              * The algorithm has finished. Otherwise, repeat from step 3 as long as vertices exist within the priority queue.
              */
+            var stuff = new Dictionary<Vertex<T>, (Vertex<T> founder, float distance, bool visited)>();
+            var queue = new PriorityQueue<Vertex<T>>(Comparer<Vertex<T>>.Create((a,b) => stuff[a].distance.CompareTo(stuff[b].distance)));
+
+            foreach(Vertex<T> vertex in vertices)
+            {
+                stuff.Add(vertex, (null, float.MaxValue, false));
+            }
+
+            stuff[start] = (null, 0, false);
+            queue.Enqueue(start);
+            while(queue.Count != 0)
+            {
+                Vertex<T> current = queue.Dequeue();
+                stuff[current] = (stuff[current].founder, stuff[current].distance, true);
+
+                foreach(Vertex<T> vertex in current.Neighbors.Where(x => edges.Contains(GetEdge(current, x))))
+                {
+                    float distance = stuff[current].distance + GetEdge(current, vertex).Distance;
+
+                    if(distance < stuff[vertex].distance)
+                    {
+                        stuff[vertex] = (current, distance, false);
+                    }
+                    if(!queue.Contains())
+
+                }
+            }
         }
     }
 }
